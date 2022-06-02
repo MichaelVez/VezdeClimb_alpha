@@ -8,4 +8,36 @@ canvas {
   border: 3px solid;
   height: 90vh;
   margin: 1rem;
+  position: relative;
+}
+.buttonContLeft {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 999;
+}
+.buttonContRight {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 9999;
+}
+.holdMenu {
+  width: 100%;
+  position: absolute;
+  flex-direction: column;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background-color: rgba(168, 155, 155, 0.638);
+  z-index: 9999;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.holdMenuHoldInput {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
 }

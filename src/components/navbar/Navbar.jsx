@@ -14,10 +14,8 @@ export default class Navbar extends Component {
         <Link to='/routes' className='link'>
           Community routes
         </Link>
-        <Link to='/history' className='link'>
-          History
-        </Link>
-        <Link to='/aboutme' className='link'>
+
+        <Link to='/about-me' className='link'>
           About me
         </Link>
       </div>

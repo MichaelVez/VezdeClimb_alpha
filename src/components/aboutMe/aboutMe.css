@@ -1,0 +1,14 @@
+.aboutMe {
+  height: 93vh;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: column;
+}
+#myPic {
+  border-radius: 50%;
+  text-align: center;
+  height: 60%;
+}
+#git {
+}
