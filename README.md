@@ -1,4 +1,4 @@
-#  VezdeClimb 3D - FrontEnd mid BootCamp project
+#  VezdeClimb 3D - Bootcamp Front-end mid project
 ## technologies used:
 ### react,
 ### three.js,
