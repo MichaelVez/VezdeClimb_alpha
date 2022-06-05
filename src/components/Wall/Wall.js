@@ -1,25 +1,27 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Canvas } from "@react-three/fiber";
-import {
-  Box,
-  Cone,
-  Dodecahedron,
-  Octahedron,
-  OrbitControls,
-  Stars,
-} from "@react-three/drei";
+import { OrbitControls, Stars } from "@react-three/drei";
+import * as dat from "dat.gui";
 import "./Wall.css";
+import ActiveHoldView from "./ActiveHoldView";
 let ArrWall = [];
+// let gui = new dat.GUI();
+const options = {
+  param1: 1,
+  param2: 1,
+  param3: 1,
+  rotate: 0,
+};
+let ActiveHold = "boxBufferGeometry";
+
 let CreateHold = (x, y, z) => {
-  let holdSizeHeight = 1;
-  let holdSizeWidth = 1;
+  let holdSizeHeight = options.param1;
+  let holdSizeWidth = options.param2;
+  let holdSizeZ = options.param3;
+  // let rot = options.rotate;
   return (
-    <mesh
-      key={Math.random()}
-      position={[x, y, z]}
-      // rotation={[Math.PI / 2, 0, 0]}
-    >
-      <boxBufferGeometry args={[holdSizeWidth, holdSizeHeight]} />
+    <mesh key={Math.random()} position={[x, y, z]}>
+      <ActiveHold args={[holdSizeWidth, holdSizeHeight, holdSizeZ]} />
       <meshNormalMaterial color={"cornflowerblue"} />
     </mesh>
   );
@@ -46,12 +48,18 @@ function App() {
 
   useEffect(() => {
     console.log("mout");
+    //build wall
     for (let i = wallLocation.x_start; i < wallLocation.x_end; i++) {
       for (let j = wallLocation.y_start; j < wallLocation.y_end; j++) {
-        console.log("build");
         ArrWall.push(Item(i, j, -1));
+        console.log("build");
       }
     }
+    //dat gui
+    // gui.add(options, "param1", 1, 15, 1);
+    // gui.add(options, "param2", 1, 15, 1);
+    // gui.add(options, "param3", 1, 15, 1);
+    // gui.add(options, "rotate", 0, 15, 1);
     return () => {
       console.log("cleanup");
       ArrWall = [];
@@ -71,8 +79,6 @@ function App() {
           // console.log(e);
           if (place) {
             place = false;
-            // console.log("recived---");
-            // console.log(e);
             let pos = e.object.position;
             setTimeout(() => {
               place = true;
@@ -92,79 +98,34 @@ function App() {
   };
 
   const hold_menu = () => {
-    console.log("here");
     setIsHoldMenu(true);
   };
   // let ref = useRef();
+  const onChangeValue = (e) => {
+    console.log(e.target.value);
+    ActiveHold = e.target.value.toString();
+  };
   const HoldMenu = () => {
     return (
       <div className='holdMenu'>
-        <>
-          <div>Hold type</div>
-          <div className='holdMenuHoldInput'>
-            <div>
-              <Canvas>
-                <Box />
-                <color attach='background' args={["White"]} />
-                <directionalLight color='red' position={[0, 0, 5]} />
-                <ambientLight intensity={0.5} />
-                <OrbitControls />
-              </Canvas>
-              <img src='' alt='' />
-              <input type='radio' name='holdType' />
-            </div>
-            <div>
-              <Canvas>
-                <Octahedron /> <color attach='background' args={["White"]} />
-                <OrbitControls />
-              </Canvas>
-              <img src='' alt='' />
-              <input type='radio' name='holdType' />
-            </div>
-            <div>
-              <Canvas>
-                <Dodecahedron /> <color attach='background' args={["White"]} />
-                <OrbitControls />
-              </Canvas>
-
-              <img src='' alt='' />
-              <input type='radio' name='holdType' />
-            </div>
-            <div>
-              <Canvas>
-                <Cone /> <color attach='background' args={["White"]} />
-                <OrbitControls />
-              </Canvas>
-              <img src='' alt='' />
-              <input type='radio' name='holdType' />
-            </div>
+        <div className='holdMenuCont'>
+          <div className='list'>
+            <div>Simple Box</div>
+            <div>item2</div>
+            <div>item3</div>
+            <div>item4</div>
           </div>
-        </>
-        <div>
-          Hold Settings
-          <div>
-            <label htmlFor='hold'>Width </label>
-            <input type={"range"} id='size' min='1' max='100' value='50' />
-          </div>
-          <div>
-            <label htmlFor='hold'>Height </label>
-            <input type={"range"} id='size' min='1' max='100' value='50' />
-          </div>
-          <div>
-            <label htmlFor='hold'>Angle </label>
-            <input type={"range"} id='size' min='1' max='100' value='50' />
+          <div className='holdPreview'>
+            <ActiveHoldView hold={ActiveHold} />
           </div>
         </div>
-        <div>
-          <button>Save</button>
-          <button
-            onClick={() => {
-              setIsHoldMenu(false);
-            }}
-          >
-            Cancel
-          </button>
-        </div>
+        <button
+          onClick={() => {
+            setIsHoldMenu(false);
+          }}
+        >
+          Close
+        </button>
       </div>
     );
   };
