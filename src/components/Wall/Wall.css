@@ -14,13 +14,13 @@ canvas {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 999;
+  z-index: 2;
 }
 .buttonContRight {
   position: absolute;
   top: 0;
   right: 0;
-  z-index: 9999;
+  z-index: 2;
 }
 .holdMenu {
   width: 100%;
@@ -30,7 +30,7 @@ canvas {
   left: 0;
   height: 100%;
   background-color: rgba(168, 155, 155, 0.638);
-  z-index: 9999;
+  z-index: 2;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -45,4 +45,16 @@ canvas {
   align-items: center;
   height: 90%;
   width: 100%;
+}
+
+#gui {
+  position: absolute !important;
+  top: 7vh !important;
+  right: 0 !important;
+}
+.dg.ac {
+  z-index: 5;
+}
+#btn_choosehold {
+  z-index: 2;
 }
