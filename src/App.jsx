@@ -1,13 +1,12 @@
 import React from "react";
 import { Route } from "react-router-dom";
-
-import "./App.css";
-
 import Navbar from "./components/navbar/Navbar";
 import Homepage from "./components/homepage/Homepage";
 import Wall from "./components/Wall/Wall";
 import AboutMe from "./components/aboutMe/AboutMe";
 import CommunityRoutes from "./components/communityRoutes/CommunityRoutes";
+import "./App.css";
+
 export default function App() {
   return (
     <>
