@@ -182,7 +182,7 @@ function App() {
       }
 
       if (e.target.id === "ringBufferGeometry") {
-        //todo
+        //todo a
         //innerRadius — Default is 0.5.
         // outerRadius — Default is 1.
         // thetaSegments — Number of segments. A higher number means the ring will be more round. Minimum is 3. Default is 8.
