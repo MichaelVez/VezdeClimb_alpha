@@ -6,7 +6,7 @@ import Wall from "./components/Wall/Wall";
 import AboutMe from "./components/aboutMe/AboutMe";
 import CommunityRoutes from "./components/communityRoutes/CommunityRoutes";
 import "./App.css";
-
+import "./assets/googleIcons.css";
 export default function App() {
   return (
     <>

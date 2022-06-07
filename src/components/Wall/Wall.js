@@ -1,16 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Stars } from "@react-three/drei";
+import { Canvas, useThree } from "@react-three/fiber";
+import { OrbitControls } from "@react-three/drei";
 import * as dat from "dat.gui";
 import "./Wall.css";
+import { CubeTextureLoader } from "three";
 
 let ArrWall = [];
-
+let renderSkyBox = true;
 function Ground() {
   return (
     <mesh position={[0, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
       <planeBufferGeometry attach='geometry' args={[100, 100]} />
-      <meshLambertMaterial attach='material' color='lightblue' />
+      <meshPhongMaterial color={"#00DCFF"} />
     </mesh>
   );
 }
@@ -21,9 +22,9 @@ function App() {
   const ref = useRef();
   let [ringOptions, setRingOptions] = useState({
     innerRadius: 0.5,
-    outerRadius: 1,
+    outerRadius: 10,
     thetaSegments: 8,
-    phiSegments: 1,
+    phiSegments: 8,
     thetaStart: 0,
     thetaLength: Math.PI * 2,
   });
@@ -44,24 +45,25 @@ function App() {
     height: 1,
     radialSegments: 8,
   });
+  let [wireFrameState, setWireFrameState] = useState({ wireFrame: true });
+  let [colorState, setColorState] = useState({ color: "rgb(255, 0, 255)" });
+
   let [ActiveHold, setActiveHold] = useState("boxBufferGeometry");
   let [argArray, setArgArray] = useState([]);
   let place = true;
   let [Hold, setHold] = useState([]);
   let [isHoldMenu, setIsHoldMenu] = useState(false);
-  //todo fix wall loc?
-  let [wallLocation, setWallLocation] = useState({
-    x_start: -15,
-    x_end: 15,
-    y_start: 0,
-    y_end: 40,
-  });
+
+  let x_start = -15;
+  let x_end = 15;
+  let y_start = 0;
+  let y_end = 40;
+
   useEffect(() => {
     console.log("mout");
-
     //build wall
-    for (let i = wallLocation.x_start; i < wallLocation.x_end; i++) {
-      for (let j = wallLocation.y_start; j < wallLocation.y_end; j++) {
+    for (let i = x_start; i < x_end; i++) {
+      for (let j = y_start; j < y_end; j++) {
         ArrWall.push(Item(i, j, -1));
         console.log("build");
       }
@@ -70,12 +72,15 @@ function App() {
       console.log("cleanup");
       ArrWall = [];
     };
-  }, [wallLocation]);
-  const newFunc = () => {
-    console.log("newfunc");
-  };
+  }, []);
+
   const btn_clear = () => {
     setHold([]);
+  };
+  const btn_undo = () => {
+    let newArr = [...Hold];
+    if (newArr.length >= 1) newArr.pop();
+    setHold(newArr);
   };
   //? build wall func
   const Item = (x, y, z = 0) => {
@@ -105,7 +110,7 @@ function App() {
         }}
       >
         <boxGeometry args={[1, 1, 3]} />
-        <meshStandardMaterial color={"#e0e0e0"} />
+        <meshLambertMaterial color={"white"} />
       </mesh>
     );
   };
@@ -117,10 +122,11 @@ function App() {
   const HoldMenu = () => {
     const handleListClick = (e) => {
       setActiveHold(e.target.id);
-
-      console.log(ActiveHold);
-
+      setArgArray([]);
       if (e.target.id === "boxBufferGeometry") {
+        if (Object.keys(gui.__folders).length > 0) {
+          gui.removeFolder(gui.__folders["texture-settings"]);
+        }
         let folder = gui.addFolder("texture-settings");
         folder.open();
         folder.add(options, "holdSizeWidth", 1, 15, 1).onChange((val) => {
@@ -141,56 +147,222 @@ function App() {
           setArgArray(newArr);
           setOptions(newOpt);
         });
+        folder.add(wireFrameState, "wireFrame").onChange((val) => {
+          console.log(wireFrameState.wireFrame);
+          setWireFrameState({ wireFrame: val });
+        });
+        folder.addColor(colorState, "color").onChange((val) => {
+          setColorState({ color: val });
+        });
       }
       if (e.target.id === "coneBufferGeometry") {
+        if (Object.keys(gui.__folders).length > 0) {
+          gui.removeFolder(gui.__folders["texture-settings"]);
+        }
         let folder = gui.addFolder("texture-settings");
         folder.open();
         folder.add(coneOptions, "radius", 1, 15, 1).onChange((val) => {
-          console.log(val);
-          console.log(coneOptions);
           let newOpt = { ...coneOptions, radius: val };
           setConeOptions(newOpt);
           let newArr = [val, coneOptions.height, coneOptions.radialSegments];
           setArgArray(newArr);
-          console.log(newArr);
         });
         folder.add(coneOptions, "height", 1, 15, 1).onChange((val) => {
           let newOpt = { ...coneOptions, height: val };
-          console.log(coneOptions);
-          console.log(newOpt);
           setConeOptions(newOpt);
           let newArr = [coneOptions.radius, val, coneOptions.radialSegments];
           setArgArray(newArr);
         });
-        console.log(coneOptions);
         folder.add(coneOptions, "radialSegments", 3, 15, 1).onChange((val) => {
-          console.log("here");
           let newOpt = { ...coneOptions, radialSegments: val };
           let newArr = [coneOptions.radius, coneOptions.height, val];
           setArgArray(newArr);
           setConeOptions(newOpt);
         });
+        folder.add(wireFrameState, "wireFrame").onChange((val) => {
+          console.log(wireFrameState.wireFrame);
+          setWireFrameState({ wireFrame: val });
+        });
+        folder.addColor(colorState, "color").onChange((val) => {
+          setColorState({ color: val });
+        });
       }
-
       if (e.target.id === "torusBufferGeometry") {
-        //todo
-        // radius - Radius of the torus, from the center of the torus to the center of the tube. Default is 1.
-        // tube — Radius of the tube. Default is 0.4.
-        // radialSegments — Default is 8
-        // tubularSegments — Default is 6.
-        // arc — Central angle. Default is Math.PI * 2.
+        if (Object.keys(gui.__folders).length > 0) {
+          gui.removeFolder(gui.__folders["texture-settings"]);
+        }
+        let folder = gui.addFolder("texture-settings");
+        folder.open();
+        folder.add(torusOptions, "radius", 1, 15).onChange((val) => {
+          let newOpt = { ...torusOptions, radius: val };
+          setTorusOptions(newOpt);
+          let newArr = [
+            val,
+            torusOptions.tube,
+            torusOptions.radialSegments,
+            torusOptions.tubularSegments,
+            torusOptions.arc,
+          ];
+          setArgArray(newArr);
+        });
+        folder.add(torusOptions, "tube", 0.1, 10).onChange((val) => {
+          let newOpt = { ...torusOptions, tube: val };
+          setTorusOptions(newOpt);
+          let newArr = [
+            torusOptions.radius,
+            val,
+            torusOptions.radialSegments,
+            torusOptions.tubularSegments,
+            torusOptions.arc,
+          ];
+          setArgArray(newArr);
+        });
+        folder.add(torusOptions, "radialSegments", 2, 30).onChange((val) => {
+          let newOpt = { ...torusOptions, radialSegments: val };
+          setTorusOptions(newOpt);
+          let newArr = [
+            torusOptions.radius,
+            torusOptions.tube,
+            val,
+            torusOptions.tubularSegments,
+            torusOptions.arc,
+          ];
+          setArgArray(newArr);
+        });
+        folder
+          .add(torusOptions, "tubularSegments", 3, 100, 1)
+          .onChange((val) => {
+            let newOpt = { ...torusOptions, tubularSegments: val };
+            setTorusOptions(newOpt);
+            let newArr = [
+              torusOptions.radius,
+              torusOptions.tube,
+              torusOptions.radialSegments,
+              val,
+              torusOptions.arc,
+            ];
+            setArgArray(newArr);
+          });
+        folder
+          .add(torusOptions, "arc", 0.1, Math.PI * 2, 0.001)
+          .onChange((val) => {
+            let newOpt = { ...torusOptions, arc: val };
+            setTorusOptions(newOpt);
+            let newArr = [
+              torusOptions.radius,
+              torusOptions.tube,
+              torusOptions.radialSegments,
+              torusOptions.tubularSegments,
+              val,
+            ];
+            setArgArray(newArr);
+          });
+        folder.add(wireFrameState, "wireFrame").onChange((val) => {
+          console.log(wireFrameState.wireFrame);
+          setWireFrameState({ wireFrame: val });
+        });
+        folder.addColor(colorState, "color").onChange((val) => {
+          setColorState({ color: val });
+        });
       }
-
       if (e.target.id === "ringBufferGeometry") {
-        //todo a
-        //innerRadius — Default is 0.5.
-        // outerRadius — Default is 1.
-        // thetaSegments — Number of segments. A higher number means the ring will be more round. Minimum is 3. Default is 8.
-        // phiSegments — Minimum is 1. Default is 1.
-        // thetaStart — Starting angle. Default is 0.
-        // thetaLength — Central angle. Default is Math.PI * 2.
+        if (Object.keys(gui.__folders).length > 0) {
+          gui.removeFolder(gui.__folders["texture-settings"]);
+        }
+        let folder = gui.addFolder("texture-settings");
+        folder.open();
+        folder.add(ringOptions, "innerRadius", 1, 30).onChange((val) => {
+          let newOpt = { ...ringOptions, innerRadius: val };
+          setRingOptions(newOpt);
+          let newArr = [
+            val,
+            ringOptions.outerRadius,
+            ringOptions.thetaSegments,
+            ringOptions.phiSegments,
+            ringOptions.thetaStart,
+            ringOptions.thetaLength,
+          ];
+          setArgArray(newArr);
+        });
+        folder.add(ringOptions, "outerRadius", 1, 30).onChange((val) => {
+          let newOpt = { ...ringOptions, outerRadius: val };
+          setRingOptions(newOpt);
+          let newArr = [
+            ringOptions.innerRadius,
+            val,
+            ringOptions.thetaSegments,
+            ringOptions.phiSegments,
+            ringOptions.thetaStart,
+            ringOptions.thetaLength,
+          ];
+          setArgArray(newArr);
+        });
+        folder.add(ringOptions, "thetaSegments", 1, 30).onChange((val) => {
+          let newOpt = { ...ringOptions, thetaSegments: val };
+          setRingOptions(newOpt);
+          let newArr = [
+            ringOptions.innerRadius,
+            ringOptions.outerRadius,
+            val,
+            ringOptions.phiSegments,
+            ringOptions.thetaStart,
+            ringOptions.thetaLength,
+          ];
+          setArgArray(newArr);
+        });
+        folder.add(ringOptions, "phiSegments", 1, 30).onChange((val) => {
+          let newOpt = { ...ringOptions, phiSegments: val };
+          setRingOptions(newOpt);
+          let newArr = [
+            ringOptions.innerRadius,
+            ringOptions.outerRadius,
+            ringOptions.thetaSegments,
+            val,
+            ringOptions.thetaStart,
+            ringOptions.thetaLength,
+          ];
+          setArgArray(newArr);
+        });
+        folder
+          .add(ringOptions, "thetaStart", 0, Math.PI * 2)
+          .onChange((val) => {
+            let newOpt = { ...ringOptions, thetaStart: val };
+            setRingOptions(newOpt);
+            let newArr = [
+              ringOptions.innerRadius,
+              ringOptions.outerRadius,
+              ringOptions.thetaSegments,
+              ringOptions.phiSegments,
+              val,
+              ringOptions.thetaLength,
+            ];
+            setArgArray(newArr);
+          });
+        folder
+          .add(ringOptions, "thetaLength", 0, Math.PI * 2)
+          .onChange((val) => {
+            let newOpt = { ...ringOptions, thetaLength: val };
+            setRingOptions(newOpt);
+            let newArr = [
+              ringOptions.innerRadius,
+              ringOptions.outerRadius,
+              ringOptions.thetaSegments,
+              ringOptions.phiSegments,
+              ringOptions.thetaStart,
+              val,
+            ];
+            setArgArray(newArr);
+          });
+        folder.add(wireFrameState, "wireFrame").onChange((val) => {
+          console.log(wireFrameState.wireFrame);
+          setWireFrameState({ wireFrame: val });
+        });
+        folder.addColor(colorState, "color").onChange((val) => {
+          setColorState({ color: val });
+        });
       }
     };
+
     return (
       <div className='holdMenu'>
         <div className='holdMenuCont'>
@@ -203,10 +375,16 @@ function App() {
           <div className='holdPreview'>
             <>
               <Canvas onCreated={(state) => {}}>
+                <light color={"white"} intensity={0.7} />
+                <ambientLight intensity={0.7} color={"white"} />
                 <OrbitControls />
                 <mesh key={Math.random()}>
                   <ActiveHold args={argArray} attach='geometry' />
-                  <meshNormalMaterial color={"cornflowerblue"} />
+
+                  <meshLambertMaterial
+                    wireframe={wireFrameState.wireFrame}
+                    color={colorState.color}
+                  />
                 </mesh>
                 <color attach='background' args={["white"]} />
               </Canvas>
@@ -215,10 +393,7 @@ function App() {
         </div>
         <button
           onClick={() => {
-            console.log(gui);
             gui.removeFolder(gui.__folders["texture-settings"]);
-            console.log("gere");
-            console.log(gui);
             setIsHoldMenu(false);
             for (let i = 0; i < group.current.children.length; i++) {
               //update on click because it does not update with state
@@ -248,29 +423,69 @@ function App() {
     return (
       <mesh key={Math.random()} position={[x, y, z]}>
         <ActiveHold args={argArray} />
-        <meshNormalMaterial color={"cornflowerblue"} />
+        <meshMatcapMaterial color={colorState.color} />
       </mesh>
     );
   };
   let group = useRef();
+  let light = useRef();
+  // let light2 = useRef();
+  // let light3 = useRef();
+  const SkyBox = () => {
+    const { scene } = useThree();
+    const loader = new CubeTextureLoader();
+    const texture = loader.load([
+      "px.jpg",
+      "nx.jpg",
+      "py.jpg",
+      "ny.jpg",
+      "pz.jpg",
+      "nz.jpg",
+    ]);
+    console.log(loader);
+    console.log(texture);
+    scene.background = texture;
+    renderSkyBox = false;
+    return null;
+  };
+
   return (
     <>
       <div className='container'>
         <div className='buttonContLeft'>
-          <button>Save</button>
-          <button onClick={btn_clear}>Clear</button>
+          <button>
+            <span className='material-icons'>save_as</span>
+          </button>
+          <button onClick={btn_clear}>
+            <span className='material-icons'>delete</span>
+          </button>
+          <button onClick={btn_undo}>
+            <span className='material-icons'>undo</span>
+          </button>
         </div>
         <div className='buttonContRight'>
           <button id='btn_choosehold' onClick={hold_menu}>
-            Choose Hold
+            <span className='material-icons'>egg_alt</span>
           </button>
         </div>
         {isHoldMenu && HoldMenu()}
-        <Canvas camera={{ fov: 75, position: [0, 40, 40] }}>
+        <Canvas
+          camera={{ fov: 75, position: [0, 40, 40] }}
+          onCreated={(state) => {
+            console.log(light);
+
+            // light.current.position.set(-5, 30, 10);
+            // light2.current.position.set(5, 30, 10);
+            // light.current.target.position.set(5, 10, 5);
+            // light2.current.target.position.set(-5, 10, 5);
+            // light3.current.position.set(0, 30, 5);
+          }}
+        >
           {/*@ controls @*/}
           <OrbitControls />
-          <color attach='background' args={["lightblue"]} />
-          <Stars />
+          {/* <color attach='background' args={["black"]} /> */}
+          {/* <Stars /> */}
+          {renderSkyBox && <SkyBox />}
           {/*@ ground @*/}
           <Ground />
           {/*@ climbing wall array @*/}
@@ -278,13 +493,15 @@ function App() {
           {/* Holds Array */}
           {Hold}
           {/* Lights */}
-          <ambientLight intensity={0.9} />
+          <ambientLight intensity={0.2} color={"white"} />
           <spotLight
-            position={[10, 10, 10]}
-            angle={2}
-            penumbra={0.5}
-            color={"blue"}
+            args={["white", 0.5]}
+            ref={light}
+            position={[0, 50, 50]}
+            castShadow
           />
+          <directionalLight intensity={0.7} color={"white"} />
+          <pointLight intensity={0.7} color={"white"} />
         </Canvas>
       </div>
     </>
