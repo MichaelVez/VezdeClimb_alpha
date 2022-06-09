@@ -22,7 +22,7 @@ function Ground() {
   );
 }
 let gui = new dat.GUI();
-let rotaion = gui.addFolder("Rotate Hold");
+let rotaion = gui.addFolder("RotateHold");
 rotaion.open();
 let scale = gui.addFolder("Scale");
 scale.open();
@@ -59,6 +59,14 @@ function App() {
     height: 1,
     radialSegments: 8,
   });
+  let [sphereOptions, setSphereOptions] = useState({
+    //     radius — sphere radius. Default is 1.
+    radius: 1,
+    // widthSegments — number of horizontal segments. Minimum value is 3, and the default is 32.
+    widthSegments: 32,
+    // heightSegments — number of vertical segments. Minimum value is 2, and the default is 16.
+    heightSegments: 16,
+  });
   let [wireFrameState, setWireFrameState] = useState({ wireFrame: false });
   let [colorState, setColorState] = useState({ color: "rgb(0, 255, 0)" });
   let [ActiveHold, setActiveHold] = useState("boxBufferGeometry");
@@ -73,132 +81,134 @@ function App() {
   let y_end = 40;
 
   useEffect(() => {
-    scale.add(scaleObj, "scale", -2, 10, 0.05).onChange((val) => {
-      setScaleObj({ scale: (val, val, val) });
-      //eslint-disable-next-line
-      CreateHold = (
-        x,
-        y,
-        z,
-        ThisHold = ActiveHold,
-        DYN_argArray = argArray,
-        color = colorState.color
-      ) => {
-        saveData.push({
-          ActiveHold,
-          argArray,
-          color: colorState.color,
+    if (Object.keys(gui.__folders).length === 2) {
+      scale.add(scaleObj, "scale", -2, 10, 0.05).onChange((val) => {
+        setScaleObj({ scale: val });
+        //eslint-disable-next-line
+        CreateHold = (
           x,
           y,
           z,
-        });
-        return (
-          <mesh
-            key={Math.random()}
-            rotation={[rotateObj.x, rotateObj.y, rotateObj.z]}
-            position={[x, y, z]}
-            scale={scaleObj.scale}
-          >
-            <ThisHold args={DYN_argArray} />
-            <meshLambertMaterial color={color} />
-          </mesh>
-        );
-      };
-    });
-    rotaion.add(rotateObj, "x", 0, Math.PI * 2, 0.05).onChange((val) => {
-      setRotateObj({ ...rotateObj, x: val });
-      CreateHold = (
-        x,
-        y,
-        z,
-        ThisHold = ActiveHold,
-        DYN_argArray = argArray,
-        color = colorState.color
-      ) => {
-        saveData.push({
-          ActiveHold,
-          argArray,
-          color: colorState.color,
+          ThisHold = ActiveHold,
+          DYN_argArray = argArray,
+          color = colorState.color
+        ) => {
+          saveData.push({
+            ActiveHold,
+            argArray,
+            color: colorState.color,
+            x,
+            y,
+            z,
+          });
+          return (
+            <mesh
+              key={Math.random()}
+              rotation={[rotateObj.x, rotateObj.y, rotateObj.z]}
+              position={[x, y, z]}
+              scale={scaleObj.scale}
+            >
+              <ThisHold args={DYN_argArray} />
+              <meshLambertMaterial color={color} />
+            </mesh>
+          );
+        };
+      });
+      rotaion.add(rotateObj, "x", 0, Math.PI * 2, 0.05).onChange((val) => {
+        setRotateObj({ ...rotateObj, x: val });
+        CreateHold = (
           x,
           y,
           z,
-        });
-        return (
-          <mesh
-            key={Math.random()}
-            rotation={[rotateObj.x, rotateObj.y, rotateObj.z]}
-            position={[x, y, z]}
-            scale={scaleObj.scale}
-          >
-            <ThisHold args={DYN_argArray} />
-            <meshLambertMaterial color={color} />
-          </mesh>
-        );
-      };
-    });
+          ThisHold = ActiveHold,
+          DYN_argArray = argArray,
+          color = colorState.color
+        ) => {
+          saveData.push({
+            ActiveHold,
+            argArray,
+            color: colorState.color,
+            x,
+            y,
+            z,
+          });
+          return (
+            <mesh
+              key={Math.random()}
+              rotation={[rotateObj.x, rotateObj.y, rotateObj.z]}
+              position={[x, y, z]}
+              scale={scaleObj.scale}
+            >
+              <ThisHold args={DYN_argArray} />
+              <meshLambertMaterial color={color} />
+            </mesh>
+          );
+        };
+      });
 
-    rotaion.add(rotateObj, "y", 0, Math.PI * 2, 0.05).onChange((val) => {
-      setRotateObj({ ...rotateObj, y: val });
-      CreateHold = (
-        x,
-        y,
-        z,
-        ThisHold = ActiveHold,
-        DYN_argArray = argArray,
-        color = colorState.color
-      ) => {
-        saveData.push({
-          ActiveHold,
-          argArray,
-          color: colorState.color,
+      rotaion.add(rotateObj, "y", 0, Math.PI * 2, 0.05).onChange((val) => {
+        setRotateObj({ ...rotateObj, y: val });
+        CreateHold = (
           x,
           y,
           z,
-        });
-        return (
-          <mesh
-            key={Math.random()}
-            rotation={[rotateObj.x, rotateObj.y, rotateObj.z]}
-            position={[x, y, z]}
-            scale={scaleObj.scale}
-          >
-            <ThisHold args={DYN_argArray} />
-            <meshLambertMaterial color={color} />
-          </mesh>
-        );
-      };
-    });
-    rotaion.add(rotateObj, "z", 0, Math.PI * 2, 0.05).onChange((val) => {
-      setRotateObj({ ...rotateObj, z: val });
-      CreateHold = (
-        x,
-        y,
-        z,
-        ThisHold = ActiveHold,
-        DYN_argArray = argArray,
-        color = colorState.color
-      ) => {
-        saveData.push({
-          ActiveHold,
-          argArray,
-          color: colorState.color,
+          ThisHold = ActiveHold,
+          DYN_argArray = argArray,
+          color = colorState.color
+        ) => {
+          saveData.push({
+            ActiveHold,
+            argArray,
+            color: colorState.color,
+            x,
+            y,
+            z,
+          });
+          return (
+            <mesh
+              key={Math.random()}
+              rotation={[rotateObj.x, rotateObj.y, rotateObj.z]}
+              position={[x, y, z]}
+              scale={scaleObj.scale}
+            >
+              <ThisHold args={DYN_argArray} />
+              <meshLambertMaterial color={color} />
+            </mesh>
+          );
+        };
+      });
+      rotaion.add(rotateObj, "z", 0, Math.PI * 2, 0.05).onChange((val) => {
+        setRotateObj({ ...rotateObj, z: val });
+        CreateHold = (
           x,
           y,
           z,
-        });
-        return (
-          <mesh
-            key={Math.random()}
-            rotation={[rotateObj.x, rotateObj.y, rotateObj.z]}
-            position={[x, y, z]}
-            scale={scaleObj.scale}
-          >
-            <ThisHold args={DYN_argArray} />
-            <meshLambertMaterial color={color} />
-          </mesh>
-        );
-      };
-    });
+          ThisHold = ActiveHold,
+          DYN_argArray = argArray,
+          color = colorState.color
+        ) => {
+          saveData.push({
+            ActiveHold,
+            argArray,
+            color: colorState.color,
+            x,
+            y,
+            z,
+          });
+          return (
+            <mesh
+              key={Math.random()}
+              rotation={[rotateObj.x, rotateObj.y, rotateObj.z]}
+              position={[x, y, z]}
+              scale={scaleObj.scale}
+            >
+              <ThisHold args={DYN_argArray} />
+              <meshLambertMaterial color={color} />
+            </mesh>
+          );
+        };
+      });
+    }
     //build wall
     // let counter = 0;
     for (let i = x_start; i < x_end; i++) {
@@ -207,22 +217,29 @@ function App() {
       }
       // counter += 0.1;
     }
-    console.log(ref);
     return () => {
       ArrWall = [];
       renderSkyBox = true;
       oneTimer = true;
       setMyState({});
+      gui.__folders.Scale.__controllers[0].remove();
+      gui.__folders.RotateHold.__controllers[0].remove();
+      gui.__folders.RotateHold.__controllers[0].remove();
+      gui.__folders.RotateHold.__controllers[0].remove();
     };
     //eslint-disable-next-line
   }, []);
 
   const btn_clear = () => {
     setHold([]);
+    saveData = [];
   };
   const btn_undo = () => {
     let newArr = [...Hold];
-    if (newArr.length >= 1) newArr.pop();
+    if (newArr.length >= 1) {
+      newArr.pop();
+      saveData.pop();
+    }
     setHold(newArr);
   };
   //? build wall func
@@ -269,7 +286,6 @@ function App() {
       setArgArray([]);
       if (e.target.id === "boxBufferGeometry") {
         if (Object.keys(gui.__folders).length > 2) {
-          console.log("here");
           gui.removeFolder(gui.__folders["texture-settings"]);
         }
         let folder = gui.addFolder("texture-settings");
@@ -300,7 +316,7 @@ function App() {
         });
       }
       if (e.target.id === "coneBufferGeometry") {
-        if (Object.keys(gui.__folders).length > 0) {
+        if (Object.keys(gui.__folders).length > 2) {
           gui.removeFolder(gui.__folders["texture-settings"]);
         }
         let folder = gui.addFolder("texture-settings");
@@ -331,7 +347,7 @@ function App() {
         });
       }
       if (e.target.id === "torusBufferGeometry") {
-        if (Object.keys(gui.__folders).length > 0) {
+        if (Object.keys(gui.__folders).length > 2) {
           gui.removeFolder(gui.__folders["texture-settings"]);
         }
         let folder = gui.addFolder("texture-settings");
@@ -408,7 +424,7 @@ function App() {
         });
       }
       if (e.target.id === "ringBufferGeometry") {
-        if (Object.keys(gui.__folders).length > 0) {
+        if (Object.keys(gui.__folders).length > 2) {
           gui.removeFolder(gui.__folders["texture-settings"]);
         }
         let folder = gui.addFolder("texture-settings");
@@ -502,6 +518,51 @@ function App() {
           setColorState({ color: val });
         });
       }
+      if (e.target.id === "sphereBufferGeometry") {
+        if (Object.keys(gui.__folders).length > 2) {
+          gui.removeFolder(gui.__folders["texture-settings"]);
+        }
+        let folder = gui.addFolder("texture-settings");
+        folder.open();
+        folder.add(sphereOptions, "radius", 1, 30).onChange((val) => {
+          let newOpt = { ...sphereOptions, radius: val };
+          setSphereOptions(newOpt);
+          let newArr = [
+            val,
+            sphereOptions.widthSegments,
+            sphereOptions.heightSegments,
+          ];
+          setArgArray(newArr);
+        });
+        folder.add(sphereOptions, "widthSegments", 3, 64, 1).onChange((val) => {
+          let newOpt = { ...sphereOptions, widthSegments: val };
+          setSphereOptions(newOpt);
+          let newArr = [
+            sphereOptions.radius,
+            val,
+            sphereOptions.heightSegments,
+          ];
+          setArgArray(newArr);
+        });
+        folder
+          .add(sphereOptions, "heightSegments", 2, 32, 1)
+          .onChange((val) => {
+            let newOpt = { ...sphereOptions, heightSegments: val };
+            setSphereOptions(newOpt);
+            let newArr = [
+              sphereOptions.radius,
+              sphereOptions.widthSegments,
+              val,
+            ];
+            setArgArray(newArr);
+          });
+        folder.add(wireFrameState, "wireFrame").onChange((val) => {
+          setWireFrameState({ wireFrame: val });
+        });
+        folder.addColor(colorState, "color").onChange((val) => {
+          setColorState({ color: val });
+        });
+      }
     };
 
     return (
@@ -512,6 +573,7 @@ function App() {
             <div id='coneBufferGeometry'>Feature - Cone</div>
             <div id='torusBufferGeometry'>TorusGeometry</div>
             <div id='ringBufferGeometry'>RingGeometry</div>
+            <div id='sphereBufferGeometry'>SphereGeometry</div>
           </div>
           <div className='holdPreview'>
             <>
@@ -668,7 +730,6 @@ function App() {
   };
 
   const handleSubmit = async () => {
-    console.log(Object.keys(input));
     input.date =
       new Date().getHours() +
       ":" +
@@ -692,11 +753,9 @@ function App() {
       setIsSaveMenu(false);
     }
   };
-  console.log(myState.data);
   if (oneTimer) {
     if (myState.data !== undefined && myState.data.length > 0) {
       for (let i = 0; i < myState.data.length; i++) {
-        console.log(myState.data[i]);
         //eslint-disable-next-line
         setHold((prev) => {
           let newHold = [...prev];
@@ -729,12 +788,11 @@ function App() {
           <button onClick={btn_undo}>
             <span className='material-icons'>undo</span>
           </button>
-        </div>
-        <div className='buttonContRight'>
           <button id='btn_choosehold' onClick={hold_menu}>
             <span className='material-icons'>egg_alt</span>
           </button>
         </div>
+        <div className='buttonContRight'></div>
         {isSaveMenu && saveMenu()}
         {isHoldMenu && HoldMenu()}
         <Canvas
