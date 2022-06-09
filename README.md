@@ -5,4 +5,5 @@
 ### react-three/drei,
 ### react-three/fiber
 ### dat.gui
+### axios
 ### https://vezde-climb3d.netlify.app/
