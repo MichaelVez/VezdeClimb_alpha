@@ -7,14 +7,15 @@ import AboutMe from "./components/aboutMe/AboutMe";
 import CommunityRoutes from "./components/communityRoutes/CommunityRoutes";
 import "./App.css";
 import "./assets/googleIcons.css";
+import { ContextProvider } from "./components/Context";
 export default function App() {
   return (
-    <>
+    <ContextProvider>
       <Navbar />
       <Route path='/' exact component={Homepage} />
       <Route path='/the-wall' exact component={Wall} />
       <Route path='/about-me' exact component={AboutMe} />
       <Route path='/routes' exact component={CommunityRoutes} />
-    </>
+    </ContextProvider>
   );
 }
