@@ -1,6 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Canvas, useThree } from "@react-three/fiber";
-import { OrbitControls, Stars } from "@react-three/drei";
+import {
+  OrbitControls,
+  // Stars
+} from "@react-three/drei";
 import * as dat from "dat.gui";
 import "./Wall.css";
 import { CubeTextureLoader } from "three";
@@ -70,8 +73,9 @@ function App() {
   let y_end = 40;
 
   useEffect(() => {
-    scale.add(scaleObj, "scale", -2, 10).onChange((val) => {
+    scale.add(scaleObj, "scale", -2, 10, 0.05).onChange((val) => {
       setScaleObj({ scale: (val, val, val) });
+      //eslint-disable-next-line
       CreateHold = (
         x,
         y,
@@ -101,7 +105,7 @@ function App() {
         );
       };
     });
-    rotaion.add(rotateObj, "x", 0, Math.PI * 2).onChange((val) => {
+    rotaion.add(rotateObj, "x", 0, Math.PI * 2, 0.05).onChange((val) => {
       setRotateObj({ ...rotateObj, x: val });
       CreateHold = (
         x,
@@ -133,7 +137,7 @@ function App() {
       };
     });
 
-    rotaion.add(rotateObj, "y", 0, Math.PI * 2).onChange((val) => {
+    rotaion.add(rotateObj, "y", 0, Math.PI * 2, 0.05).onChange((val) => {
       setRotateObj({ ...rotateObj, y: val });
       CreateHold = (
         x,
@@ -164,7 +168,7 @@ function App() {
         );
       };
     });
-    rotaion.add(rotateObj, "z", 0, Math.PI * 2).onChange((val) => {
+    rotaion.add(rotateObj, "z", 0, Math.PI * 2, 0.05).onChange((val) => {
       setRotateObj({ ...rotateObj, z: val });
       CreateHold = (
         x,
@@ -693,6 +697,7 @@ function App() {
     if (myState.data !== undefined && myState.data.length > 0) {
       for (let i = 0; i < myState.data.length; i++) {
         console.log(myState.data[i]);
+        //eslint-disable-next-line
         setHold((prev) => {
           let newHold = [...prev];
           newHold.push(

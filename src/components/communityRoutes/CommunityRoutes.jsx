@@ -22,7 +22,6 @@ export default function CommunityRoutes() {
     })();
   }, []);
   const RenderRoutes = () => {
-    console.log(fetchData);
     return fetchData.map((route) => {
       return (
         <RouteInfo
