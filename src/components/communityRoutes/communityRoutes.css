@@ -1,0 +1,14 @@
+.spinner2 {
+  width: 100px;
+  height: 100px;
+  /* border: 5px solid gray; */
+  border-radius: 100%;
+  animation: animate2 2s linear 0s infinite;
+  border-top: 5px solid greenyellow;
+  margin: auto;
+}
+@keyframes animate2 {
+  to {
+    transform: rotate(360deg);
+  }
+}
