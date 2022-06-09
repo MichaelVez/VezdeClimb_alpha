@@ -1,0 +1,12 @@
+.homepage {
+  height: 100%;
+  text-align: center;
+  background-color: rgba(89, 167, 255, 0.363);
+  font-size: 20px;
+}
+.homepage {
+  margin-top: 20px;
+}
+.homepage img {
+  border-radius: 110px;
+}

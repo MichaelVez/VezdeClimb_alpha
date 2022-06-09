@@ -5,9 +5,11 @@ import "../aboutMe/aboutMe.css";
 export default function AboutMe() {
   return (
     <div className='aboutMe'>
-      <p>Hey im michael and i need to add stuff here</p>
+      <p>Michael,Climber</p>
       <img src={img1} height='60vh' id='myPic' alt='' />
-      <img src={git} alt='' id='git' />
+      <a href='https://github.com/MichaelVez' target='_blank' rel='noreferrer'>
+        <img src={git} alt='' id='git' />
+      </a>
     </div>
   );
 }

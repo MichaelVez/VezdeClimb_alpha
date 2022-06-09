@@ -4,11 +4,10 @@
   align-items: center;
   justify-content: flex-start;
   flex-direction: column;
+  background-color: rgba(89, 167, 255, 0.363);
 }
 #myPic {
   border-radius: 50%;
   text-align: center;
   height: 60%;
-}
-#git {
 }

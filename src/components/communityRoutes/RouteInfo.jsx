@@ -14,9 +14,13 @@ export default function RouteInfo({
 }) {
   const context = useMyState();
   const handleDelete = () => {
-    axios.delete(
-      `https://628e3595368687f3e71287e0.mockapi.io/Climbing-wall/${id}`
-    );
+    try {
+      axios.delete(
+        `https://628e3595368687f3e71287e0.mockapi.io/Climbing-wall/${id}`
+      );
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
