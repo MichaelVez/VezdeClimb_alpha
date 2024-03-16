@@ -1,4 +1,6 @@
 #  VezdeClimb 3D - Bootcamp Front-end mid project
+## Demo
+### https://vezde-climb3d.netlify.app/
 
  This is a front-end react project where the user is able to build a 3D Clibming routes and share it to anyone 
 - This is a project i did for the bootcamp mid project, when we finished learning react part of the coure. I loved working on this project because i learned some much new technologies and imroved my coding skills. It was a crazy fun project to work on mainly because  first i didnt think this was possible using JS/React and it was very challenging. working with three.js is not easy, it had a hard learning curve that involves some math and new syntax, alot of doc reading and alot of different bug fixes. overall a good experince that i look forward on developing this concept app
@@ -25,5 +27,3 @@ Future Plans:
 - dat.gui,
 - mock api
 
-### Demo
-### https://vezde-climb3d.netlify.app/
